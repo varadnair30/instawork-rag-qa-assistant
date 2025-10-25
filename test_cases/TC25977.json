@@ -1,0 +1,94 @@
+{
+  "section_name": "Active Locations",
+  "section_description": null,
+  "section_full_path": "Sign up > New Onboarding > Active Locations",
+  "id": 25977,
+  "title": "Verify Pro is able to complete onboarding flow without resume or positions selected in English",
+  "custom_preconds": "Ensure enhanced_onboarding_experience exp is enabled",
+  "custom_steps_separated": [
+    {
+      "content": "Launch app and tap \"Create account\" -> Enter \"first name\", \"last name\", phone number\", and/or \"Email address\" -> Tap \"Next\"\n\n- Email address is optional",
+      "expected": "Error messages if \n- no inputs for name or phone number\n- invalid phone number\n- invalid email address\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111101)   ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111102) ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter verification code -> Tap \"Next\"",
+      "expected": "Error message if \n- no input for verification code\n- incorrect verification code\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111103) ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111104) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "(if the app is newly installed) Pro should see the \"Instawork would like to send you notification\" pop-up model  -> Tap \"Allow\"\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111105) \n",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Hey <Pro name>, let's add your profile photo\" screen with \"I'll do this later\" link at the bottom -> proceed to add a photo\n\n  ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111106) ",
+      "expected": "With REQUIRE_PROFILE_IMAGE_UPLOAD enabled, photo is now mandatory during onboarding\n\"Next\" button is only visible AFTER a photo was added.\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111107) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Let's add your date of birth\" -> Enter a birthdate\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111108) \n",
+      "expected": "An error should display if \n- no birthdate was entered.\n- birthdate entered is under 18\n\n(Birthdate is now required to complete sign up)\n\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111109)   ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111110) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Where do you live?\" -> Enter a location -> Tap \"Next\"\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111111)\n",
+      "expected": "Error should display if no location was entered\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111112) \n\nPro should be able to see the corresponding map below the entered location\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111113) \n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"You will have access to these entry-level positions\" with the 6 entry-level positions: \n        - GL\n        - Warehouse Associate - Entry Level\n        - Event Setup and Takedown\n        - Custodial\n        - Counter Staff / Cashier\n        - Concession / Stand Worker\n\n\nWithout selecting any positions, tap \"Next\" \n\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111114) \n",
+      "expected": "The screen is optional. \n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Select the advanced positions you are interested in\" with a list of skilled positions sorted by categories.\n\nWithout selecting any positions, tap \"Next\" \n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111115) ",
+      "expected": "The screen is optional. \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Create your Instawork profile to get access to shifts\" followed by\n- Import your resume\n- Don't have a resume?\n\n\nTap \"Don't have a resume?\" link \n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111116) \n",
+      "expected": "Pro should be redirected to \"Review and save profile\" screen without any data input except name and location.\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111117) ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "On \"Review and save profile\" screen, scroll to the bottom and tap \"Save profile\" \n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111118) \n",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Contractor Service Agreement\" -> Scroll down to the bottom and tap \"I agree and accept\" \n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111119) \n",
+      "expected": "The \"I agree and accept\" CTA is only enabled AFTER pro has scrolled to the bottom of the screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Congrats!\" screen with \"Book your first shift\" CTA and a \"Account created successfully\" green toast on top \n-> Tap on either the \"back <-\" button or the \"Book your first shift\" CTA\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111120) \n",
+      "expected": "If  \"Find people you may know on Instawork\" screen is presented, tap <- to proceed to the \"Open shifts\" screen\n* Expected result: \"Find people you may know on Instawork\" screen should be removed\n* This will be improved along in this ticket: https://project-tracker.example.com/tasks/45679\n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111121) \n\n\nPro should be redirected to \"Open shifts\" screen\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111122) \n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Account should be created successfully",
+      "expected": "AdminPortal:\n- Check user profile object: account status should be \"active\"\n\nPro app\n- The 6 entry-level positions should be auto-approved \n\n ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111123) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Video:  ![](index.php?/attachments/get/vwx12345-8888-9999-0000-111111111124) \n",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

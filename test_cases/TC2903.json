@@ -1,0 +1,28 @@
+{
+  "section_name": "Clock-in",
+  "section_description": null,
+  "section_full_path": "My Shifts > Upcoming Shifts > Clock-in",
+  "id": 2903,
+  "title": "Pro clocks in with QR code",
+  "custom_preconds": "Enable the experiment - \"qr_code_clock_in_feature\"\r\nPost a shift as Partner \r\nLogin as a Pro with activated position, book a shift and confirm it\r\n\r\n\r\n",
+  "custom_steps_separated": [
+    {
+      "content": "Navigate to shift details screen of upcoming shift",
+      "expected": "Verify: Able to see clock in with QR code button below",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap on Clock in with QR code",
+      "expected": "Verify: Displays scan QR code screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Scan the QR code using Biz App (Live shift tab -> QR code scanner)",
+      "expected": "Verify: Able to clock in the Pro and clock out with QR code is displayed on shift details screen",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

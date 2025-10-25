@@ -1,0 +1,71 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+*.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Python packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# RAG / AI project artifacts
+chroma_data/
+data/
+chromadb/
+vector_store/
+index/
+*.pkl
+*.bin
+*.pt
+*.npy
+*.npz
+
+# Model or embedding cache
+sentence_transformers/
+huggingface/
+transformers_cache/
+.cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE settings
+.vscode/
+.idea/
+
+# System files
+*.dll
+*.pyd
+*.so

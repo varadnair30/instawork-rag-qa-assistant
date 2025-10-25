@@ -1,0 +1,52 @@
+{
+  "section_name": "Account Status",
+  "section_description": null,
+  "section_full_path": "Account Status",
+  "id": 25884,
+  "title": "Verify account gets deactivated with 5 violation points",
+  "custom_preconds": "New logic: https://github.com/company/repo/pull/8765\r\n* Regular workers: 8 points threshold for deactivation\r\n* New Pro workers: 3.5 points threshold for deactivation\r\n\r\n\r\n\r\nConfig: NEW_WORKER_SHIFT_THRESHOLD set to 2",
+  "custom_steps_separated": [
+    {
+      "content": "Login as a newly sign up pro",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Have the new pro book 2 shifts",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Have the pro no show (or late cancel) the first shift (violation point 4)\n- No-show: A pro who was attached to a shift, but failed to show up for the gig.\n\n",
+      "expected": "Pro's account should be suspended for 1 day + removed from future shifts",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Once pro is able to book shifts, have Pro book 2 shifts",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Have Pro late cancel the shift (violation point 1) so the total violation points is > 4.5\n- Late Cancellation: A pro who was attached to a shift, but cancelled close to the start time of the gig.",
+      "expected": "Pro's account should be deactivated + removed from future shifts",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Relaunch the app and see the Open shifts screen",
+      "expected": "Open shift screen should indicate the account is now deactivated with a \"No-show\" card and its corresponding shift details.\n\n ![](index.php?/attachments/get/mno12345-5555-6666-7777-888888888881)    ![](index.php?/attachments/get/mno12345-5555-6666-7777-888888888882) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap on the \"No-show\" card",
+      "expected": "Pro is redirected to the \"Cancellation Policy & Suspensions - Pro support\" help page\n\n\n ![](index.php?/attachments/get/mno12345-5555-6666-7777-888888888883) \n",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

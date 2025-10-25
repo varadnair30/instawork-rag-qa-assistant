@@ -1,0 +1,64 @@
+{
+  "section_name": "Cancel shifts",
+  "section_description": null,
+  "section_full_path": "My Shifts > Upcoming Shifts > Cancel shifts",
+  "id": 2959,
+  "title": "Free Cancellation",
+  "custom_preconds": null,
+  "custom_steps_separated": [
+    {
+      "content": "Create and activate a new user OR log in as an active user with no cancellations in the past 30 days",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Book a shift",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Click the X to close the post-booking page",
+      "expected": "Pro is taken to Shift details screen with Shift booked CTA",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Shift booked CTA contains:",
+      "expected": "Timer XX:XX left to free cancel, View shift summary btn and Cancel shift with no penalties btn\n ![](index.php?/attachments/get/efg12345-1111-2222-3333-444444444401) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Scroll to the bottom of Shift details screen",
+      "expected": "there is a \"I can't make it\" btn",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "click \"I can't make it\" button at the bottom of the shift details page or \"Cancel shift with no penalties\" button on the shift details CTA",
+      "expected": "- Verify: the \"Cancel this shift?\" page loads\n- Verify: The shift information should be present\n- Verify: There is a clock icon present along with the text: Cancelling now has no penalty\n- Verify: The following text is present: Cancelling within X minutes of booking has no penalty\n- Verify: There should be text \"Free cancellation expiring in xxxx\" where xxxx is the time left before free cancelation expires\n- Verify: There is a button present which has the following label: \"I don't need to cancel\". \n ![](index.php?/attachments/get/efg12345-1111-2222-3333-444444444402) \n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap it \"I don't need to cancel\" btn",
+      "expected": "Pro is taken back to shift details screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "click \"I can't make it\" button at the bottom of the shift details page or \"Cancel shift with no penalties\" button on the shift details CTA. \n\n\n",
+      "expected": "Cancel this shift? screen is loaded",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "\"Tap on \"Cancel shift\" btn",
+      "expected": "User is taken back to the shift details page and a Green banner should appear with the following text: \"Your shift has been cancelled.\"",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

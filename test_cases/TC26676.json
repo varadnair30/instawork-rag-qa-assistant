@@ -1,0 +1,22 @@
+{
+  "section_name": "\"Available\" positions",
+  "section_description": "Constance: \n- ENABLE_COACH_CALL_SYSTEM enabled\n- ENABLE_AI_SCREENING_ASSISTANT enabled\n- AUTO_REJECT_LOW_RATINGS disabled\n",
+  "section_full_path": "Position approval flow > \"Available\" positions",
+  "id": 26676,
+  "title": "Verify Pro can apply any available positions with AI coach call",
+  "custom_preconds": "Experiment: position_approval_workflow_v2",
+  "custom_steps_separated": [
+    {
+      "content": "To apply for more positions, navigate to either following locations to start a coach call\n\n- \"Open shifts\" -> \"Screening call\" section -> tap \"Call now\"\n- \"Shift access\" -> scroll down to \"All positions\" -> \"Available\" or \"Manage positions\" -> tap \"Start call\"\n\n ![](index.php?/attachments/get/abc12345-1111-2222-3333-444444444444) ![](index.php?/attachments/get/abc12345-1111-2222-3333-444444444445) \n",
+      "expected": "Pro is redirected to \"Experience screening call\" screen where Pro can tap on either language to start coach call\n\n ![](index.php?/attachments/get/abc12345-1111-2222-3333-444444444446) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "To simulate a coach call and have proper Gig position logs created. \n- Script #70 in https://company-wiki.example.com/spaces/EN/pages/2902294740/QA+Shell+short+cuts+and+tips. ",
+      "expected": "Once the coach call is completed, checked \"Worker positions\" in AdminPortal\n- Worker positions: https://admin.example.com/positions/worker-positions/\n- You can filter by \"Pro userProfile ID\"\n\n\nApproved entry-level positions: \n- status: active\n- Approved note: Onboarding flow position auto-approval\n\nApproved skilled positions (ex. Dishwasher):\n- status: active\n- Approved note: ai_screening_approved_rating\n\nSkilled positions rejected by AI coach call (ex. Bartender)\n- status: rejected_by_ai_screening\n- Disabled note: ai_screening_rejected_rating\n\n ![](index.php?/attachments/get/abc12345-1111-2222-3333-444444444447) \n",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

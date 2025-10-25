@@ -1,0 +1,100 @@
+{
+  "section_name": "Active Locations",
+  "section_description": null,
+  "section_full_path": "Sign up > New Onboarding > Active Locations",
+  "id": 25975,
+  "title": "Verify Pro is able to complete onboarding flow with resume and positions selected in English",
+  "custom_preconds": "Ensure enhanced_onboarding_experience exp is enabled",
+  "custom_steps_separated": [
+    {
+      "content": "Launch app and tap \"Create account\" -> Enter \"first name\", \"last name\", phone number\", and/or \"Email address\" -> Tap \"Next\"\n\n- Email address is optional",
+      "expected": "Error messages if \n- no inputs for name or phone number\n- invalid phone number\n- invalid email address\n\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999901) ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999902) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "",
+      "expected": "Error message if \n- no input for verification code\n- incorrect verification code\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999903) ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999904) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "(if the app is newly installed) Pro should see the \"Instawork would like to send you notification\" pop-up model  -> Tap \"Allow\"\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999905)\n",
+      "expected": "\n ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Hey <Pro name>, let's add your profile photo\" screen with \"I'll do this later\" link at the bottom -> proceed to add a photo\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999906) \n",
+      "expected": "With REQUIRE_PROFILE_IMAGE_UPLOAD enabled, photo is now mandatory during onboarding\n\"Next\" button is only visible AFTER a photo was added.\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999907) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Let's add your date of birth\" -> Enter a birthdate\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999908) \n",
+      "expected": "An error should display if \n- no birthdate was entered.\n- birthdate entered is under 18\n\n(Birthdate is now required to complete sign up)\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999909) ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999910) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Where do you live?\" -> Enter a location -> Tap \"Next\"\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999911) \n",
+      "expected": "Error should display if no location was entered\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999912) \n\n\nPro should be able to see the corresponding map below the entered location\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999913) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"You will have access to these entry-level positions\" with the 6 entry-level positions: \n        - GL\n        - Warehouse Associate - Entry Level\n        - Event Setup and Takedown\n        - Custodial\n        - Counter Staff / Cashier\n        - Concession / Stand Worker\n\n\nSelect a position and tap \"Next\" \n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999914) \n",
+      "expected": "The screen is optional. \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Select the advanced positions you are interested in\" with a list of skilled positions sorted by categories.\n\nSelect a position and tap \"Next\" \n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999915) \n",
+      "expected": "The screen is optional. \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Create your Instawork profile to get access to shifts\" followed by\n- Import your resume\n- Don't have a resume?\n\n\nTap\"Import your resume\"\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999916) \n",
+      "expected": "Pro can proceed to upload a resume and tap \"Save\"\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999917) ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999918) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "On \"Review and save profile\" screen, scroll to the bottom and tap \"Save profile\" \n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999919)\n",
+      "expected": "Pro should be able to \n- upload another resume\n- edit summary\n- add / edit / delete work experience, education, certifications\n\n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Screening call required\" screen\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999920)\n",
+      "expected": "- Tap \"Skip\" will skip the screening call and be redirected to the \"Contractor Service Agreement\" screen\n\n- Pro is able to tap on either \"Spanish\" or \"English\" to start screening call / coach call -> Start the call -> Pro should be redirected back to \"Screening call required\" screen with \"Next\" button\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999921) ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999922) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Contractor Service Agreement\" -> Scroll down to the bottom and tap \"I agree and accept\" \n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999923) \n",
+      "expected": "The \"I agree and accept\" CTA is only enabled AFTER pro has scrolled to the bottom of the screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"Congrats!\" screen with \"Book your first shift\" CTA and a \"Account created successfully\" green toast on top \n-> Tap on either the \"back <-\" button or the \"Book your first shift\" CTA\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999924) \n",
+      "expected": "If  \"Find people you may know on Instawork\" screen is presented, tap <- to proceed to the \"Open shifts\" screen\n* Expected result: \"Find people you may know on Instawork\" screen should be removed\n* This will be improved along in this ticket: https://project-tracker.example.com/tasks/45678\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999925) \n\n\n\nPro should be redirected to \"Open shifts\" screen\n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999926) \n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Account should be created successfully",
+      "expected": "AdminPortal:\n- Check user profile object: account status should be \"active\"\n\nPro app\n- resume should be uploaded with work experience, educations, certifications\n- The 6 entry-level positions should be auto-approved \n\n ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999927) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Video:  ![](index.php?/attachments/get/pqr12345-6666-7777-8888-999999999928) ",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

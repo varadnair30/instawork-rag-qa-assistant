@@ -1,0 +1,16 @@
+{
+  "section_name": "Active Locations",
+  "section_description": null,
+  "section_full_path": "Sign up > New Onboarding > Active Locations",
+  "id": 25976,
+  "title": "Verify Pro is able to complete onboarding flow in Spanish",
+  "custom_preconds": "Ensure enhanced_onboarding_experience exp is enabled\r\n\r\nChange device language to Spanish\r\n\r\n",
+  "custom_steps_separated": [
+    {
+      "content": "Launch app and tap \"Create account\" -> Proceed to create account in Spanish with or without resume added and/or positions selected. ",
+      "expected": "Pro should be able to create an account in Spanish. \n\nOnboarding flow in Spanish with resume and positions selected.\n ![](index.php?/attachments/get/stu12345-7777-8888-9999-000000000001) \n\n\nOnboarding flow in Spanish without resume and positions selected.\n ![](index.php?/attachments/get/stu12345-7777-8888-9999-000000000002) \n",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

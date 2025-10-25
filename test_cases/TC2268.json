@@ -1,0 +1,22 @@
+{
+  "section_name": "Spanish support",
+  "section_description": null,
+  "section_full_path": "Spanish support",
+  "id": 2268,
+  "title": "Verify App can be installed and navigated in Spanish support",
+  "custom_preconds": "device language is set to Spanish.",
+  "custom_steps_separated": [
+    {
+      "content": "Install and launch and app\n\n",
+      "expected": "Successful installation of the app and its launch\n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Go through the app",
+      "expected": "Tab navigation and text render example: location name, business name, rate and other CTA\u2019s correctly populating in Spanish.",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

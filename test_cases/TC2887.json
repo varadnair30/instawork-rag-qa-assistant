@@ -1,0 +1,16 @@
+{
+  "section_name": "Open Shifts",
+  "section_description": "- viewing a list of entry level shifts\n- list of shifts\n- filter function\n- List of position: Apply positions, fulfill position requirements\n- Booking shifts",
+  "section_full_path": "Open Shifts",
+  "id": 2887,
+  "title": "Verify entry level gigs on the open shifts list are displayed after sign up has completed",
+  "custom_preconds": null,
+  "custom_steps_separated": [
+    {
+      "content": "Sign up as a pro from a region where at least one basic position(General Labor/Entry level warehouse) is active and there are 5 or more open gigs in these positions at the moment",
+      "expected": "- Verify: Gigs preview section is visible under heading 'Entry-level gigs to book right away' after sign up, on landing screen above your 'interests section'\n\n- Verify: Gigs preview section should not be visible if less than 5 gigs is available in the region and at least one basic position(General Labor/Entry level warehouse) is not active ",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

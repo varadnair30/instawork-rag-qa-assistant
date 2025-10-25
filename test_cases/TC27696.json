@@ -1,0 +1,52 @@
+{
+  "section_name": "Offline mode",
+  "section_description": "TAD:\nhttps://company-wiki.example.com/spaces/EN/pages/2932638057/QA+Plan+Offline+mode\n\n- Currently fully rolled out to iOS users \n- Targeting Android users via experiment: `mobile_offline_mode_feature`",
+  "full_path": "Offline mode",
+  "id": 27696,
+  "title": "Offline mode: Verify pro can clock in",
+  "custom_preconds": "Post a upcoming shift which starts soon as Partner and assign the shift to a pro",
+  "custom_steps_separated": [
+    {
+      "content": "Login a the Pro and navigate to shift details screen \n\n",
+      "expected": "Should display the clock in button and enabled ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Disable the internet network on your device and navigate back to shift details screen",
+      "expected": "There should be a banner in the top of the screen with the text:\n\n\"You seem to be offline, Connect to the network and try again\" and the clock in button is enabled\n\n ![](index.php?/attachments/get/tuv12345-6666-7777-8888-999999999901) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Press the try again link from the top yellow banner\n\n",
+      "expected": "The same screen should be reloaded with the yellow banner still visible\n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Refresh the screen",
+      "expected": "Should still display the same screen as shown in step 2",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Click on clock in button and enter the code and hit save",
+      "expected": "Should display \"No service\" Don't worry, we will save your clock-in once you get connection back.\" \n\n\n![](index.php?/attachments/get/tuv12345-6666-7777-8888-999999999902) ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Click on Got it and it should navigate back to shift details screen with clock in button still enabled",
+      "expected": "Should display the shift details screen with clock in button still enabled",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Turn back the internet connection on Pros device and navigate to shift details screen",
+      "expected": "Pro should be Clocked in and check the AdminPortal for shift log and it should display supervised_offline_retry_clock_in as reason - https://admin.staging.example.com/backend/shift/VXz4egy/change/ and make sure the clock in timing logged is same as the timing used during offline clockin timing",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

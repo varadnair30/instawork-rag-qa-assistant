@@ -1,0 +1,34 @@
+{
+  "section_name": "Active Locations",
+  "section_description": null,
+  "full_path": "Sign up > New Onboarding > Active Locations",
+  "id": 26415,
+  "title": "Validate birthdate and location steps during onboarding flow",
+  "custom_preconds": null,
+  "custom_steps_separated": [
+    {
+    "content": "Pro proceeds to sign up a new account",
+    "expected": "",
+    "additional_info": "",
+    "refs": ""
+    },
+    {
+    "content": "On the \"Let's add your date of birth\" screen, tap \"Next\" without entering anything",
+    "expected": "A \"Please enter your birthdate\" error message should display\n\n ![](index.php?/attachments/get/klm12345-3333-4444-5555-666666666601) \n",
+    "additional_info": "",
+    "refs": ""
+    },
+    {
+    "content": "Pro proceed to enter a birthdate to less than 18",
+    "expected": "A \"you need to be at least 18 years old\" error message should display\nPro will need to reenter a valid birthdate to proceed\n\n ![](index.php?/attachments/get/klm12345-3333-4444-5555-666666666602) \n",
+    "additional_info": "",
+    "refs": ""
+    },
+    {
+    "content": "On \"Where do you live\" screen, tap \"Next\" without entering anything",
+    "expected": "A \"This field is required\" error message should display\n\n ![](index.php?/attachments/get/klm12345-3333-4444-5555-666666666603) \n",
+    "additional_info": "",
+    "refs": ""
+    }
+  ]
+}

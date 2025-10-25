@@ -1,0 +1,88 @@
+{
+  "section_name": "Booking Shifts",
+  "section_description": null,
+  "section_full_path": "Open Shifts > Booking Shifts",
+  "id": 2808,
+  "title": "Verify newly sign up pro is able to book shifts (ex. General Labor) and completes Training and Background check",
+  "custom_preconds": "** Note: Please skip liveness detection part of the testing for now. The feature is currently disabled on Production (not sure when this will be enabled again)\r\n\r\n\r\nPro has completed sign up",
+  "custom_steps_separated": [
+    {
+      "content": "Tap on one of shifts in \"Open shifts\" screen for any of the auto-approved positions",
+      "expected": "Pro is redirected to shift details screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap \"Complete prerequisites\"",
+      "expected": "Pro is redirected to \"Unlock this and similar shifts by completing prerequisites\" screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Complete the all steps as required ",
+      "expected": "If theres a quiz:\n\n- Fail quiz Scenario: End of the quiz, it would display \"you have scored below 80%. Pro can choose to re-take the quiz\n\n- Re-take quiz scenario: After 1st attempt is failed should display re-take the quiz and then take the quiz again and answer correctly. Once passed, it would display the successfully passed screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap \"Book shift\"",
+      "expected": "Pro is taking to watch a 1:41 mins video \n\nOnce the video is completed, Pro is automatically taken to the \"Complete these steps to book shift\" screen\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "On \"Complete these steps to book shift\" screen, tap \"Review agreement\" to scroll through all content until \"I accept\" button is enabled. Tap \"I accept\"",
+      "expected": "Pro is redirected back to \"Complete these steps to book shift\" screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Complete the following steps\n- Accept the Contractor Services Agreement: Should have a green checkmark already\n- Allow location access\n- Enable motion activity access\n- Add your home address\n- Add your SSN\n- Add your bank details\n- Review cancellation policy",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Under \"Review Cancellation policy\", tap \"Review cancellation policy\" button",
+      "expected": "Pro is proceed to \"Cancellation policy\" screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Scroll to the bottom and tap \"I understand and agree to the policy\"",
+      "expected": "Pro is redirected back to \"Complete these steps to book shift\" screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap \"Continue\"",
+      "expected": "Pro is redirected to \"Accept these terms to book this shift\"",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "**Note**: With \"streamlined_booking_acceptance\" exp enabled, the \"Accept these terms to book this shift\" step will be removed during booking\n\nPro proceed to accept the following terms\n- I'll confirm 24 hrs before each shift or will be replaced\n- I'll clock in to my shift in the app so I can get paid\n- I understand that instawork has zero tolerance for no-shows\n- I'll enable GPS location tracking 90 min before each shift or I'll be replaced\n- I commit to upholding all the. other work requirements for this shift \n\nTap \"I accept\"",
+      "expected": "Pro is redirected to \"Please complete the background check\" with pre-populated Pro information",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "(Optional)\nIf pro was suspected of having duplicate account, he/she will be added (manually) to the \"duplicate_detection_photo_update\" experiment",
+      "expected": "Pro should be asked to retake the profile photo with liveness detection feature as the last step to accept the following terms (in step 18) before tapping \"I accept\"\n\n- I'll confirm 24 hrs before each shift or will be replaced\n- I'll clock in to my shift in the app so I can get paid\n- I understand that instawork has zero tolerance for no-shows\n- I'll enable GPS location tracking 90 min before each shift or I'll be replaced\n- I commit to upholding all the. other work requirements for this shift \n- I'll ensure my profile photo is up to date",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Click \"Continue\"",
+      "expected": "Pro is redirected to Checkr UI for background check process",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro proceed to complete background check via Checkr UI and tap \"Done\" (after around 15 seconds on the screen)",
+      "expected": "Pro is now on \"Awesome, your shift is booked\" with \"Make your first impression count!\" window pulled up from the bottom containing \"Not Now\" and \"Show me tips\" options\"",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

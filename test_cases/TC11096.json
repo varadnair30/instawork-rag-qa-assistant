@@ -1,0 +1,34 @@
+{
+  "section_name": "Offline mode",
+  "section_description": "TAD:\nhttps://company-wiki.example.com/spaces/EN/pages/2932638057/QA+Plan+Offline+mode\n\n- Currently fully rolled out to iOS users \n- Targeting Android users via experiment: `mobile_offline_mode_feature`",
+  "full_path": "Offline mode",
+  "id": 11096,
+  "title": "Offline mode: Scrolling after coming back online (Open Shifts)",
+  "custom_preconds": null,
+  "custom_steps_separated": [
+    {
+      "content": "Having your internet enabled, navigate to the open shifts screen, and make sure that there are shifts listed",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Being there in the open shifts screen, disable your internet connection",
+      "expected": "There should be a banner in the bottom of the screen with the text:\n\n\"You seem to be offline, check your connection  Reload\"\n\n\n ![](index.php?/attachments/get/nop12345-4444-5555-6666-777777777701) \n\n\n\n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap on the reload CTA visible in the bottom of the screen",
+      "expected": "Should be able to re-load the screen\n\nYellow banner at the top with \u201cTry again\u201d should be visible\n\n\n ![](index.php?/attachments/get/nop12345-4444-5555-6666-777777777702) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enable your internet again, and scroll to the bottom of the list, so that the UI attempts to lazy load more shifts",
+      "expected": "The UI is now able to load more shifts into the list",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

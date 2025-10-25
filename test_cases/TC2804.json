@@ -1,0 +1,34 @@
+{
+  "section_name": "Messaging",
+  "section_description": "- new/existing messages\n- group messages\n- messaging with Captain\n- Push notifications",
+  "section_full_path": "Messages Tab > Messaging",
+  "id": 2804,
+  "title": "Verify Pros is able to start a new message and continue with an existing message",
+  "custom_preconds": null,
+  "custom_steps_separated": [
+    {
+      "content": "Tap on messages tab",
+      "expected": "verify that the screen is displayed",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro starts a new conversation with another Pro by clicking on the pro photo and message button\n\n",
+      "expected": "Pro is able to send messages to a new pro\n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap on an existing message\n\n",
+      "expected": "Verify Message view is loaded with previous conversations\n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro writes and sends messages\n\n",
+      "expected": "- Verify the \"send\" button is visible only if messages are inputted in the text field\n\n\n- Verify Pro is able to write and send more messages\n\n- Verify the message sent from first Pro's account is received\n\n",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

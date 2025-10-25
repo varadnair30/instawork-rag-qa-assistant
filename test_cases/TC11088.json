@@ -1,0 +1,25 @@
+{
+  "section_name": "Offline mode",
+  "section_description": "TAD:\nhttps://company-wiki.example.com/spaces/EN/pages/2932638057/QA+Plan+Offline+mode\n\n- Currently fully rolled out to iOS users \n- Targeting Android users via experiment: `mobile_offline_mode_feature`",
+  "full_path": "Offline mode",
+  "id": 11088,
+  "title": "Offline mode: Error display for non-offline enabled screens",
+  "custom_preconds": null,
+  "custom_steps_separated": [
+    {
+      "content": "Having your device connected to the internet open the pro app\n",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Now go offline and navigate to the Earnings or Profile tab\n\n(Or any other UI that is not enabled for offline mode)",
+      "expected": "Error screen should be visible but you should be able to go back to already loaded content\n\n ![](index.php?/attachments/get/qrs12345-5555-6666-7777-888888888801) \n",
+      "additional_info": "",
+      "refs": ""
+    }
+  ],
+  "custom_mission": null,
+  "custom_goals": null,
+  "labels": []
+}

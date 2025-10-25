@@ -1,0 +1,28 @@
+{
+  "section_name": "Login",
+  "section_description": null,
+  "section_full_path": "Login",
+  "id": 2260,
+  "title": "Verify Pro can login as existing user",
+  "custom_preconds": null,
+  "custom_steps_separated": [
+    {
+      "content": "Download the latest app and tap on the login button ",
+      "expected": "Navigates to Login screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter the existing phone number and click next ",
+      "expected": "Displays enter verification code screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter valid verification code and click next ",
+      "expected": "Displays the educate value proposition screen",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "section_name": "Offline mode",
+  "section_description": "TAD:\nhttps://company-wiki.example.com/spaces/EN/pages/2932638057/QA+Plan+Offline+mode\n\n- Currently fully rolled out to iOS users \n- Targeting Android users via experiment: `mobile_offline_mode_feature`",
+  "section_full_path": "Offline mode",
+  "id": 11076,
+  "title": "Offline mode: Open Shifts first page is cached",
+  "custom_preconds": null,
+  "custom_steps_separated": [
+    {
+      "content": "Having your internet enabled, navigate to the open shifts screen, and make sure that there are shifts listed",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Being there in the open shifts screen, disable your internet connection",
+      "expected": "There should be a banner in the top of the screen with the text:\n\n\"You seem to be offline, check your connection  Reload or Hide\"\n\n\n  ![](index.php?/attachments/get/def12345-2222-3333-4444-555555555551) \n\n\n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap on the reload CTA",
+      "expected": "Should be able to re-load the screen\n\nYellow banner at the top with \u201cTry again\u201d should be visible\n\n\n  ![](index.php?/attachments/get/def12345-2222-3333-4444-555555555552) ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Press the try again banner from the top yellow banner",
+      "expected": "The same screen should be reloaded with the yellow banner still visible",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Do pull to refresh gesture",
+      "expected": "The same screen should be reloaded with the yellow banner still visible",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "In the open shifts screen, scroll to the bottom of the list, so that the UI attempts to lazy load more shifts",
+      "expected": "- A persistent spinner should be shown in the bottom of the screen\n\n\n\n   ![](index.php?/attachments/get/def12345-2222-3333-4444-555555555553) ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap on the \"Reload\" CTA",
+      "expected": "The screen should be reloaded",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enable your internet again, tap on the \"Try again\" CTA from the top yellow banner",
+      "expected": "The top yellow banner should disappear",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

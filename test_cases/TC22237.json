@@ -1,0 +1,28 @@
+{
+  "section_name": "Booking Shifts",
+  "section_description": null,
+  "section_full_path": "Open Shifts > Booking Shifts",
+  "id": 22237,
+  "title": "Verify \"Please review the shift details\" is presented before proceeding to booking",
+  "custom_preconds": "Exp: SHIFT_REVIEW_HOLD_TIME_HOURS \r\n* Set the exp to 36 (hr) by default on Staging (should be 240 in QA)",
+  "custom_steps_separated": [
+    {
+      "content": "On Open shifts screen, Pro tap on a shift starting more than 2 days",
+      "expected": "Pro is redirected to shift detail screen",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro tap \"Book shift\"",
+      "expected": "Pro should see the \"Please review the shift details\" CTA at the bottom of the shift detail screen\nPro should be able to proceed when countdown is less than 1m (around 58s left)\n\n ![](index.php?/attachments/get/jkl12345-4444-5555-6666-777777777771) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Note: We don't apply gig hold logic to \n* multi-day shifts with \"same worker required multi-day gig\" and \"Let the shifts go unfilled\" selected\n* LTA shifts",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

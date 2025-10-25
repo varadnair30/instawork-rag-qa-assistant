@@ -1,0 +1,46 @@
+{
+  "section_name": "Human coach calls",
+  "section_description": null,
+  "section_full_path": "Position approval flow > \"Need further review\" positions > Human coach calls",
+  "id": 9080,
+  "title": "Verify Pro is required to schedule a human coach call when booking the first shift of the manual approved position",
+  "custom_preconds": "Complete test case C26680: https://testrail.example.com/index.php?/cases/view/26688\r\n\r\n\r\n** Old Requirements **\r\nLogin to a new pro with your own personal phone number\r\n- Ensure to have a skilled position (ex. Bartender) approved\r\n- Pro has never gone through a coach call before\r\n- Make sure Pro meets minimum requirements for the approved position \r\n-- this can be checked in \"Application requirements\" table. Ex. Bartender will need to have at least 12 month work exp\r\n-- To accomplish this, simply add a 12 month FULL TIME OR PART TIME JOB work experience (Not the Staffing agency or shift work)",
+  "custom_steps_separated": [
+    {
+      "content": "Using a pro that was just manually approved for the Bartender position and hasn't gone trough a coach call, navigate to the shift details screen of a Bartender position (Ensure the shift start above 24hrs) ",
+      "expected": "The bottom sheet button shows: \"Complete prerequisites\"\n\n ![](index.php?/attachments/get/hij12345-2222-3333-4444-555555555501) \n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Once the prerequisites screen loads, tap on \"Schedule call with Instawork coach\"",
+      "expected": "Screen with available call slots shows up\n\n ![](index.php?/attachments/get/hij12345-2222-3333-4444-555555555502)  ![](index.php?/attachments/get/hij12345-2222-3333-4444-555555555503)  \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Select the language (English or Spanish) that Pro wishes to use and choose an available slot -> click submit",
+      "expected": "The screen \"Coach call scheduled\" shows up\n ![](index.php?/attachments/get/hij12345-2222-3333-4444-555555555504) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "After scheduling the coach call press the \"Done\" button",
+      "expected": "The schedule screen should be closed and the user should be taken back to the prerequisites screen where the coach call prerequisite should show as completed\n\nNote: there is currently an existing bug where the pro was taken to the list of schedule date/time options instead of the prerequisites screen: https://project-tracker.example.com/tasks/4183\n\n ![](index.php?/attachments/get/hij12345-2222-3333-4444-555555555505) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Side Note:\n- A coach call will be made on (or around 12 mins after) the call was scheduled (You can refer to the time again under \"Assigned time\" in \"Coach screening\" table in AdminPortal). \n\n\n\n",
+      "expected": "To test, you can just pick up the call. You don't need to finish. Simply hung up the call. \n- Once done, check in \"Coach screening\". The status should be updated from \"Waiting for call\" to \"AI CALL COMPLETED\" -> to either \"rejected\" or \"Missed call\", or \"Approved by screener\" \n\nNotes: \n- We automatically do the position analysis in AnalysisEngine and create the rating to approve or reject the call once it is finished.  Status updated to \"AI completed\" and then it always get updated to either \"rejected\" or \"Missed call\", or \"Approved by screener\" if proven to be really good at one of the positions. \n- This process might be improved again near future so Pro doesn't have to wait for the call and can simply press the button to go thru the interview right away.)",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Once the human coach call is completed (via coach side in pro all)\nVideo: https://testrail.example.com/index.php?/attachments/get/103100 ",
+      "expected": "If the human coach call approves the position\n- Verified \"Coach call\" section is no longer presented on \"Open shifts\"\n- Verified Pro is able to book another shift of the same position with \"Schedule call with Instawork coach checked in prerequisites screen \n- Verified all booked shifts remain on \"My Shifts\" screen\n\nIf the human coach call has been rejected \n- Verified \"Coach call\" section is no longer presented on \"Open shifts\"\n- Verified Pro is NOT able to book shifts with rejected positions. Those shifts don't show up on Open shifts either\n- Verified rejected positions are removed from \"My shifts\". \n- Booked shifts with approved positions remain on \"My shifts\"\n- Navigate to the following locations, rejected positions should show up on \"Not eligible\" category instead of \"Eligible\" category\n-- \"Shift access\" -> Scroll to \"All positions\"\n-- Profile -> Scroll to \"All positions\"",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

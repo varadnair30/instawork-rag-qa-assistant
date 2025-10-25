@@ -1,0 +1,76 @@
+{
+  "section_name": "Open Shifts",
+  "section_description": "- viewing a list of entry level shifts\n- list of shifts\n- filter function\n- List of position: Apply positions, fulfill position requirements\n- Booking shifts",
+  "section_full_path": "Open Shifts",
+  "id": 16632,
+  "title": "Verify Roster should see a \"RECOMMENDED 2X POINTS\" tag for a F30 or R30 shifts",
+  "custom_preconds": "-Experiment: recommended_shifts_bonus_points- cleaned up and removed",
+  "custom_steps_separated": [
+    {
+      "content": "Login to a Pro (ex. 234567) who is a roster of a F30 or R30 company \n\n\nF30 Partner\n* they created their 1st shift less than 30 days ago, which is determined by the company\u2019s first_gig_at field\n\nR30 Partner\n* (resurrected in the last 30 days) is when the company\u2019s is_resurrected_partner is set to True\n* Ex. test_user_001 demo_business_01 \n\n\n",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Have the F30 or R30 Partner create a shift\n",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Go to the \"shift group\" table in AdminPortal -> Click on the shift group created above -> Click on \"Check worker access\" -> enter the logged in Pro's user id -> click \"Check\")\n",
+      "expected": "\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Under the \"Dispatch\" section, check both \"Shift Group access tier\" and \"Worker access tier\"\n\nAnd wait until \"Shift Group access tier\" reaches \"tier 2\"\n\n** Note that if your \"Worker access tier\" is not 2, it means the Pro is NOT a roster of this Partner. \n\n ![](index.php?/attachments/get/ghi12345-3333-4444-5555-666666666662) \n",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Once \"Shift Group access tier\" reaches tier 2 (which should now be the same as \"Worker access tier\" that's already in tier 2), pull to refresh the \"Open shifts\" screen in pro app to view the shift ",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Note the shift created above (in step 2) on \"Open shifts\"",
+      "expected": "Pro should see the \"RECOMMENDED 2X POINTS\" tag\n\n  ![](index.php?/attachments/get/ghi12345-3333-4444-5555-666666666661) ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap on the shift to navigate to the shift detail screen",
+      "expected": "Pro should see \n- A \"RECOMMENDED 2X POINTS\" tag\n- with a callout card content: \"Earn 2x points towards tTop Pro when you complete this shift successfully! Learn more\" on top (if there are other callouts, may need to swipe the carousel to see it)\n\n\n  ![](index.php?/attachments/get/ghi12345-3333-4444-5555-666666666663) \n\n\n\n ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap on the \"Learn more\" link on the callout card.",
+      "expected": "tapping that callout opens the FAQ article (A \"RECOMMENDED\" text should be displayed at the bottom of the help page)\n\n ![](index.php?/attachments/get/ghi12345-3333-4444-5555-666666666664) \n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Navigate back to Open shifts screen, and tap on the notification icon at top-right corner\n\n  ![](index.php?/attachments/get/ghi12345-3333-4444-5555-666666666665) \n ",
+      "expected": "1. Notification number should be increased on the notification icon indicating a new notification has been added\n2. In the \"Notifications\" screen, a new \"Recommended shift - 2x Top Pro Points\" notification should show up\n   ![](index.php?/attachments/get/ghi12345-3333-4444-5555-666666666666)   \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Tap on the new \"Recommended shift\" notification",
+      "expected": "Pro should be redirected to the corresponding recommended shift detail screen ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Video:  ![](index.php?/attachments/get/ghi12345-3333-4444-5555-666666666667) ",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

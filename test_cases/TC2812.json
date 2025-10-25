@@ -1,0 +1,70 @@
+{
+  "section_name": "Shift Transfer",
+  "section_description": "Pre requisites: A/B test (shift_coverage_transfer / enabled):\n https://admin.example.com/abtesting/experiment/26/change/\n\n1. Pro should have an upcoming gig.\n\n2. Should click on \u201cI can\u2019t make it\u201d link on gig details screen and navigate to the \u201cChoose an option\u201d screen.\n\n 3. Taps on \u201cGet my shift covered\u201d row and that brings pro to the \u201cGet shift covered\u201d screen.\n\nTest video: https://drive.example.com/shared/fgghfhgfhj",
+  "section_full_path": "My Shifts > Upcoming Shifts > Shift Transfer",
+  "id": 2812,
+  "title": "Send transfer request to professional with Name and Phone number",
+  "custom_preconds": null,
+  "custom_steps_separated": [
+    {
+      "content": "On the \u201cGet shift covered\u201d screen, pro enters the name of the professional to whom he wants to send shift transfer request",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Click \u201cSend request\u201d button on empty form. ",
+      "expected": "User should get error messages: 1. \u201cPlease enter a name.\u201d and \u201cPlease enter a phone number.\u201d",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter a name that's <2 characters",
+      "expected": "user gets an error msg \u201cPlease enter a name with at least 2 characters.\"",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter a name >2 characters ",
+      "expected": "no error message should show up",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter an invalid US phone number. ",
+      "expected": "User should get an error message \u201cPlease enter a valid phone number.\u201d",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter a phone number that is not associated with an Instawork account",
+      "expected": "The error message \"Please try someone else. This Pro does not have an account with Instawork yet.\" should appear",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter a phone number of a pro who does not meet the requirements for the shift.",
+      "expected": "The error message \"This person isn't eligible to cover this shift.\" should appear",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter the phone number for the account that you are testing on and try to click on \"Send request\". ",
+      "expected": "User should get an error message \"Please enter the phone number of the person who can cover your shift.\"",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Enter a valid US phone number that is associated with a pro account and has the appropriate prerequisites for the shift. Click \u201cSend request\u201d button",
+      "expected": "Pro should get green confirmation \u201cWe\u2019ve received your request\u201d banner.",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Click on the \"I can't make it\" button on the gig details page",
+      "expected": "Verify: There is text at the top of the screen stating how many shift transfers you have in progress with a link to see the status of each request",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

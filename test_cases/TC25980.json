@@ -1,0 +1,64 @@
+{
+  "section_name": "Fast-track signup",
+  "section_description": null,
+  "section_full_path": "Sign up > New Onboarding > Fast-track signup",
+  "id": 25980,
+  "title": "Verify Pro is able to complete onboarding flow with fast-track request created",
+  "custom_preconds": "Ensure enhanced_onboarding_experience exp is enabled\r\n\r\n",
+  "custom_steps_separated": [
+    {
+      "content": "Launch app and tap \"Create account\" -> Enter \"first name\", \"last name\", phone number\", and/or \"Email address\" -> Tap \"Next\"",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro entered verification code -> tap \"Next\"",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "In AdminPortal, create a \"fast-track request\" object for the user\nhttps://admin.example.com/positions/fasttrack/\n",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro kills and relaunches the app\nOR\nPro re-logs in to the account",
+      "expected": "Pro should be redirected to the new onboarding flow and land on \"Let's add your profile photo\" screen.\nWith REQUIRE_PROFILE_IMAGE_UPLOAD enabled, photo is now mandatory during onboarding\n\"Next\" button is only visible AFTER a photo was added.\n\n  ![](index.php?/attachments/get/bcd12345-0000-1111-2222-333333333301) ![](index.php?/attachments/get/bcd12345-0000-1111-2222-333333333302) ",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro proceed to complete the whole onboarding flow until the \"Contractor Service Agreement\" screen",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "On \"Contractor Service Agreement\" screen, scroll down to the bottom and tap \"I agree and accept\"\n\n",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Pro should land on \"You're approved!\" screen with \"Account created successfully\" green toast on top and \"Book your first shift\" CTA at the bottom\n\nPro can tap on <- or \"Book your first shift\" CTA\n\nNote: currently no requested position showing on this screen due to this bug: https://project-tracker.example.com/tasks/45681\n\n ![](index.php?/attachments/get/bcd12345-0000-1111-2222-333333333303) \n",
+      "expected": "If  \"Find people you may know on Instawork\" screen is presented, tap <- to proceed to the \"Open shifts\" screen\n\nExpected result: \"Find people you may know on Instawork\" screen should be removed\nThis will be improved along in this ticket: https://project-tracker.example.com/tasks/45682\n\n ![](index.php?/attachments/get/bcd12345-0000-1111-2222-333333333304) \n\n\nPro should be redirected to \"Open shifts\" screen\n ![](index.php?/attachments/get/bcd12345-0000-1111-2222-333333333305) \n\n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Account should be created successfully",
+      "expected": "AdminPortal:\n\nCheck user profile object: account status should be \"active\"\nPro app\n\nThe 6 entry-level positions should be auto-approved\n\n ![](index.php?/attachments/get/bcd12345-0000-1111-2222-333333333306) \n",
+      "additional_info": "",
+      "refs": ""
+    },
+    {
+      "content": "Video:  ![](index.php?/attachments/get/bcd12345-0000-1111-2222-333333333307) ",
+      "expected": "",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "section_name": "Inactive locations",
+  "section_description": null,
+  "section_full_path": "Sign up > New Onboarding > Inactive locations",
+  "id": 25979,
+  "title": "Verify Pro is able to complete onboarding flow at an inactive location without region mapping",
+  "custom_preconds": "Ensure enhanced_onboarding_experience exp is enabled\r\n\r\nLaunch BS and change device location to an inactive location without region mapping: Japan \r\n",
+  "custom_steps_separated": [
+    {
+      "content": "Launch app on BS and tap \"Create account\" -> Proceed to complete the onboarding flow\n\n ![](index.php?/attachments/get/yza12345-9999-0000-1111-222222222201) \n",
+      "expected": "AdminPortal:\n- Check user profile object: account status should be \"active\"\n\n\n\nPro app\n- Pro should be able to complete the onboarding flow\n- pro should be landed on Preview screen (\u201cWe\u2019re not available in <city name> yet with \u201cComing soon\u201d image)\n-- Currently there is an issue where after killing and relaunching the app, pro will see the Open shifts screen instead: https://project-tracker.example.com/tasks/45680\n\n  ![](index.php?/attachments/get/yza12345-9999-0000-1111-222222222202) \n\n\n\nNote: \n- If you signed up at an active location without changing to an inactive location, pro should see the \"Open shifts\" screen once the account is created\n\n",
+      "additional_info": "",
+      "refs": ""
+    }
+  ]
+}
