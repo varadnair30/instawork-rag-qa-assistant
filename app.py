@@ -1,6 +1,5 @@
 """
-RAG-based QA Assistant for Test Case Management
-FINAL INTEGRATED VERSION - Complete with chunking, retrieval, and top-K keyword boosts
+RAG-based QA Assistant for Test Case Management FINAL INTEGRATED VERSION - Complete with chunking, retrieval, and top-K keyword boosts 
 """
 
 import sys
@@ -57,6 +56,9 @@ class TestCaseRAG:
             name="test_cases",
             metadata={"hnsw:space": "cosine"}
         )
+        # ALWAYS load LLM for summaries (even in structured mode)
+        logger.info(f"Loading LLM for AI summaries: {llm_model}")
+        device = 0 if torch.cuda.is_available() else -1
 
         # Initialize LLM pipeline if requested
         self.llm_pipeline = None
@@ -98,14 +100,10 @@ class TestCaseRAG:
     # SUMMARIZATION MODULE
     # ===================================================
     def summarize_test_case(self, test_case_content: dict) -> str:
-        """
-        Summarizes a single test case text using the LLM.
-        """
-        if not self.use_llm or not self.llm_model_obj or not self.tokenizer:
+        if not self.use_llm or not self.llm_pipeline:
             return "(⚠️ Summarization not available: LLM not initialized)"
-
+        
         try:
-            # Build a readable string from test case dict
             readable_text = ""
             if test_case_content.get("title"):
                 readable_text += f"Title: {test_case_content['title']}\n"
@@ -117,28 +115,16 @@ class TestCaseRAG:
                 for i, step in enumerate(steps, 1):
                     if isinstance(step, dict):
                         readable_text += f"  {i}. {step.get('content', '')} -> Expected: {step.get('expected', '')}\n"
-
+            
             prompt = (
                 "Summarize the following QA test case in 3-4 concise lines. "
                 "Focus on what it tests, key steps, and the expected outcome.\n\n"
                 f"{readable_text}"
             )
-
-            inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
-            device = self.llm_model_obj.device if hasattr(self.llm_model_obj, 'device') else 'cpu'
-            inputs = {k: v.to(device) for k, v in inputs.items()}
-
-            outputs = self.llm_model_obj.generate(
-                **inputs,
-                max_length=150,
-                num_beams=4,
-                early_stopping=True
-            )
-            summary = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            summary = self.llm_pipeline(prompt, max_length=150, do_sample=False)[0]['generated_text']
             return summary.strip()
         except Exception as e:
             return f"(⚠️ Could not generate summary: {e})"
-
         
 
     def chunk_test_case(self, test_case: Dict, filename: str) -> List[Dict]:
@@ -298,27 +284,24 @@ class TestCaseRAG:
         )
         logger.info("Embeddings created and stored successfully")
     
+    
     def retrieve(self, query: str, similarity_threshold: float = 0.3) -> List[Dict]:
         """
-        SMART: Adaptive thresholds based on query characteristics
+        SMART: Adaptive retrieval with dynamic keyword boosts, query expansion, and adaptive filtering.
         """
+
         query_lower = query.lower()
 
-        # Detect query type
-        is_negative_query = any(word in query_lower for word in [
-            "any test", "are there", "do we have", "do we test", 
-            "is there", "show me test"
-        ]) and not any(word in query_lower for word in [
-            "spanish", "resume", "onboarding", "offline", "email", 
-            "validation", "error", "internet", "coach"
-        ])
-        
-        # Extract keywords
+        # --------- DYNAMIC NEGATIVE QUERY DETECTION ------------
         doc = nlp(query_lower)
+        is_negative_query = any(tok.lemma_ in ["any", "exist", "have", "show"] for tok in doc if tok.pos_ in {"VERB", "AUX", "PRON"}) \
+                            and any(tok.dep_ in {"nsubj", "dobj"} for tok in doc)
+
+        # --------- DYNAMIC KEYWORD EXTRACTION ------------
         keywords = set([token.lemma_ for token in doc if token.pos_ in {"NOUN", "PROPN", "VERB"}])
         keywords.update([chunk.text.lower() for chunk in doc.noun_chunks])
 
-        # Query expansion
+        # --------- QUERY EXPANSION (dynamic) ------------
         expanded_queries = [query]
         if "don't have" in query_lower or "do not have" in query_lower:
             expanded_queries.append(query_lower.replace("don't have", "without").replace("do not have", "without"))
@@ -329,7 +312,7 @@ class TestCaseRAG:
         if "create account" in query_lower or "creating account" in query_lower:
             expanded_queries.append(query_lower + " sign up onboarding registration")
 
-        # Compute embeddings
+        # --------- EMBEDDING QUERY ------------
         query_embeddings = self.embedding_model.encode(expanded_queries)
         query_embedding = np.mean(query_embeddings, axis=0)
 
@@ -338,36 +321,16 @@ class TestCaseRAG:
             n_results=self.top_k * 3
         )
 
-        # Boost dictionary
-        boost_dict = {
-            "without": 0.15,
-            "don't have": 0.15,
-            "invalid": 0.10,
-            "error": 0.10,
-            "offline": 0.20,
-            "internet": 0.20,
-            "connection": 0.20,
-            "spanish": 0.10,
-            "coach": 0.10,
-            "call": 0.10,
-            "resume": 0.10,
-            "validation": 0.10,
-            "signup": 0.10,
-            "registration": 0.10,
-            "qr": 0.15,
-            "code": 0.10
-        }
-
-        # Process chunks
+        # --------- DYNAMIC KEYWORD BOOST PER FILE ------------
         file_scores = {}
         file_chunks = {}
         file_keyword_boosts = {}
 
-        for i, (doc_text, metadata, distance) in enumerate(zip(
+        for doc_text, metadata, distance in zip(
             results['documents'][0],
             results['metadatas'][0],
             results['distances'][0]
-        )):
+        ):
             filename = metadata['filename']
             similarity = 1 - distance
             if similarity < similarity_threshold:
@@ -382,14 +345,10 @@ class TestCaseRAG:
             file_chunks[filename].append({'text': doc_text, 'type': metadata['type'], 'similarity': similarity})
 
             doc_lower = doc_text.lower()
-            boost = 0.0
-            for kw in keywords:
-                if kw in doc_lower:
-                    boost += boost_dict.get(kw, 0.05)
-
+            boost = sum(0.05 for kw in keywords if kw in doc_lower)  # dynamic boost only when query keyword matches
             file_keyword_boosts[filename] = max(file_keyword_boosts[filename], boost)
 
-        # Aggregate results
+        # --------- AGGREGATE RESULTS PER FILE ------------
         aggregated_results = []
         for filename, scores in file_scores.items():
             base_score = np.mean(sorted(scores, reverse=True)[:3])
@@ -405,37 +364,36 @@ class TestCaseRAG:
 
         aggregated_results.sort(key=lambda x: x['score'], reverse=True)
 
-        # ============ SMART ADAPTIVE FILTERING ============
+        # --------- SMART ADAPTIVE FILTERING ------------
         if not aggregated_results:
             return []
-        
+
         top_score = aggregated_results[0]['score']
-        
-        # Context-aware thresholds
+
         if is_negative_query:
-            # Strict for "do we have X" queries
             min_threshold = 0.55
             relative_factor = 0.75
         else:
-            # Lenient for specific feature queries
             min_threshold = 0.40
             relative_factor = 0.65
-        
-        # Filter by minimum threshold
+
         if top_score < min_threshold:
             return []
-        
-        # Adaptive relative filtering
+
         filtered_results = []
         for result in aggregated_results:
             relative_threshold = top_score * relative_factor
             absolute_min = 0.45 if not is_negative_query else 0.55
-            
             if result['score'] >= max(relative_threshold, absolute_min):
                 filtered_results.append(result)
-        
+
         return filtered_results[:self.top_k]
+
+    
     def generate_structured_answer(self, query: str, retrieved_docs: List[Dict]) -> str:
+        """
+        FIXED: Prevents token overflow in AI summary
+        """
         if not retrieved_docs:
             return (
                 "I could not find any test cases related to this query in the provided test suite.\n\n"
@@ -445,56 +403,156 @@ class TestCaseRAG:
                 "• Try rephrasing your question with different keywords"
             )
 
+        # Part 1: Structured test case details
         answer = f"Found {len(retrieved_docs)} relevant test case(s):\n\n"
+        
         for i, doc in enumerate(retrieved_docs, 1):
             test_case = doc['test_case']
             filename = doc['filename']
             score = doc['score']
             boost_info = f" [+{doc['boost']:.2f} keyword boost]" if 'boost' in doc and doc['boost'] > 0 else ""
-            answer += f"{'='*60}\n{i}. [{filename}] (Relevance: {score:.2f}{boost_info})\n{'='*60}\n"
+            
+            answer += f"{'='*60}\n"
+            answer += f"{i}. [{filename}] (Relevance: {score:.2f}{boost_info})\n"
+            answer += f"{'='*60}\n"
+            
             if test_case.get('title'):
                 answer += f"📋 Title: {test_case['title']}\n"
+            
             if test_case.get('section_full_path'):
                 answer += f"📁 Path: {test_case['section_full_path']}\n"
+            
             if test_case.get('custom_preconds'):
                 preconds = test_case['custom_preconds']
                 if preconds and preconds.strip():
                     answer += f"⚙️  Preconditions: {preconds[:150]}{'...' if len(preconds) > 150 else ''}\n"
+            
             steps = test_case.get('custom_steps_separated', [])
             if steps:
                 answer += f"📝 Steps: {len(steps)} steps\n"
+                # Show first 2 steps
                 for j, step in enumerate(steps[:2], 1):
                     if isinstance(step, dict):
                         content = step.get('content', '')
                         if content:
                             preview = content[:100] + '...' if len(content) > 100 else content
                             answer += f"   {j}. {preview}\n"
+            
             answer += "\n"
-        return answer
+        
+        # Part 2: AI-Generated Summary (FIXED!)
+        if self.use_llm and self.llm_pipeline:
+            answer += f"{'='*60}\n"
+            answer += "🤖 AI-Generated Summary:\n"
+            answer += f"{'='*60}\n"
+            
+            try:
+                # Build MINIMAL context (prevent token overflow)
+                summary_items = []
+                for doc in retrieved_docs[:3]:  # Top 3 only
+                    tc = doc['test_case']
+                    title = tc.get('title', 'Untitled')[:80]  # Truncate long titles
+                    summary_items.append(f"- {title} [{doc['filename']}]")
+                
+                context_text = '\n'.join(summary_items)
+                
+                # VERY SHORT prompt (under 100 tokens)
+                summary_prompt = f"""Answer this question using these test cases:
+    Q: {query[:100]}
 
+    Tests:
+    {context_text}
+
+    Answer in 2 sentences:"""
+                
+                # Generate with strict limits
+                summary_response = self.llm_pipeline(
+                    summary_prompt,
+                    max_length=100,      # Short output
+                    min_length=20,
+                    do_sample=False,
+                    num_beams=1,         # Faster, prevents repetition
+                    early_stopping=True
+                )
+                
+                summary = summary_response[0]['generated_text'].strip()
+                
+                # Validate summary quality
+                if len(summary) < 10 or summary.count('.') == 0:
+                    raise ValueError("Summary too short or malformed")
+                
+                answer += f"{summary}\n"
+                
+            except Exception as e:
+                logger.warning(f"AI summary failed: {e}")
+                # Fallback to simple summary
+                answer += f"The system found {len(retrieved_docs)} relevant test cases. "
+                answer += f"Primary match: {retrieved_docs[0]['test_case'].get('title', 'See details above')}. "
+                answer += "See structured details above for complete information.\n"
+        else:
+            # No LLM - provide simple summary
+            answer += f"{'='*60}\n"
+            answer += "📋 Summary:\n"
+            answer += f"{'='*60}\n"
+            answer += f"Found {len(retrieved_docs)} test case(s) matching your query. "
+            answer += f"Primary match: {retrieved_docs[0]['test_case'].get('title', 'See details above')}\n"
+        
+        return answer
     def generate_llm_answer(self, query: str, retrieved_docs: List[Dict]) -> str:
+        """
+        Generate LLM-based answer using retrieved documents.
+        Prevents repetition and token overflow by truncating context.
+        Falls back to structured output if hallucinations or errors occur.
+        """
+        if not retrieved_docs:
+            return self.generate_structured_answer(query, retrieved_docs)
+
         context_parts = []
+        total_tokens = 0
+        max_context_tokens = 400  # limit context to prevent overflow
+
         for i, doc in enumerate(retrieved_docs[:3], 1):
             test_case = doc['test_case']
             filename = doc['filename']
+
+            # Build test case context safely
             context = f"Test Case {i} [{filename}]:\n"
             context += f"Title: {test_case.get('title', 'N/A')}\n"
+
             if test_case.get('section_full_path'):
                 context += f"Path: {test_case['section_full_path']}\n"
+
             if test_case.get('custom_preconds'):
-                context += f"Prerequisites: {test_case['custom_preconds'][:100]}\n"
+                preconds = test_case['custom_preconds']
+                preconds = preconds[:200]
+                context += f"Prerequisites: {preconds}\n"
+
             steps = test_case.get('custom_steps_separated', [])
             if steps:
-                context += f"Steps: {len(steps)} test steps\n"
+                context += f"Steps: {min(len(steps), 5)} test steps (truncated)\n"
+                for j, step in enumerate(steps[:5], 1):
+                    if isinstance(step, dict):
+                        content = step.get('content', '')
+                        expected = step.get('expected', '')
+                        step_text = f"Step {j}: {content[:80]} -> Expected: {expected[:80]}\n"
+                        context += step_text
+
+            # Stop adding more context if token budget exceeded
+            token_estimate = len(context.split()) // 1.3
+            if total_tokens + token_estimate > max_context_tokens:
+                break
+            total_tokens += token_estimate
             context_parts.append(context)
-        full_context = '\n'.join(context_parts)
+
+        full_context = "\n".join(context_parts)
+
         prompt = f"""You are a QA assistant. Answer based ONLY on the test cases below.
 
 RULES:
-1. Only use information from the provided test cases
-2. Always cite source files [Source: filename]
-3. If test cases don't answer the question, say so
-4. Never invent test case names or details
+1. Only use information from the provided test cases.
+2. Always cite source files in square brackets, e.g. [Source: filename].
+3. If test cases don't answer the question, say so clearly.
+4. Never invent new test case names or details.
 
 Question: {query}
 
@@ -506,22 +564,45 @@ Answer:"""
         try:
             response = self.llm_pipeline(
                 prompt,
-                max_length=400,
+                max_length=300,
                 min_length=30,
-                do_sample=False
+                do_sample=False,
+                num_beams=2,
+                early_stopping=True
             )
-            answer = response[0]['generated_text']
+            answer = response[0]['generated_text'].strip()
+
+            # --- Post-cleaning for repetition ---
+            lines = answer.splitlines()
+            cleaned = []
+            seen = set()
+            for line in lines:
+                if line.strip().lower() not in seen:
+                    cleaned.append(line)
+                    seen.add(line.strip().lower())
+            answer = "\n".join(cleaned)
+
+            # If the model loops (same phrase repeated)
+            if answer.lower().count(query.lower()) > 2 or len(set(answer.split())) < 20:
+                logger.warning("Detected repetition or meaningless response. Falling back.")
+                return self.generate_structured_answer(query, retrieved_docs)
+
+            # Verify citations
             import re
-            cited_files = set(re.findall(r'TC\d+\.json', answer))
+            cited_files = set(re.findall(r'\bTC\d+\.json\b', answer))
             valid_files = {doc['filename'] for doc in retrieved_docs}
             invalid_citations = cited_files - valid_files
+
             if invalid_citations:
-                logger.warning(f"Hallucination detected: {invalid_citations}")
+                logger.warning(f"Hallucination detected in LLM answer: {invalid_citations}")
                 return self.generate_structured_answer(query, retrieved_docs)
+
             return answer
+
         except Exception as e:
             logger.error(f"Error generating LLM answer: {e}")
             return self.generate_structured_answer(query, retrieved_docs)
+
 
     def answer_question(self, query: str) -> Dict:
         logger.info(f"Processing query: {query}")
@@ -545,9 +626,10 @@ Answer:"""
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='RAG QA Assistant')
-    parser.add_argument('--mode', choices=['structured', 'llm'], default='structured', help='Output mode: structured (safe) or llm (natural language)')
-    parser.add_argument('--summarize', action='store_true', help='Generate summaries for test cases')
-    parser.add_argument('--model', default='google/flan-t5-base', help='LLM model to use (only for llm mode)')
+    parser.add_argument('--mode', choices=['structured', 'llm'], default='structured', 
+                       help='Output mode: structured (safe) or llm (natural language)')
+    parser.add_argument('--model', default='google/flan-t5-base', 
+                       help='LLM model to use')
     args = parser.parse_args()
 
     print("="*70)
@@ -555,20 +637,20 @@ def main():
     print("="*70)
     print(f"Mode: {args.mode.upper()}")
     if args.mode == 'structured':
-        print("✓ Structured output (zero hallucination risk)")
+        print("✓ Structured details + AI summary")
     else:
-        print("✓ Natural language generation with validation")
+        print("✓ Natural language generation")
     print("="*70)
 
     print("\n🔧 Initializing RAG system...")
     try:
-        use_llm = (args.mode == 'llm')
+        # ALWAYS load LLM (needed for summaries in structured mode)
         rag = TestCaseRAG(
             test_cases_dir="test_cases",
             embedding_model="all-MiniLM-L6-v2",
-            llm_model=args.model if use_llm else None,
+            llm_model=args.model,  # Always pass model
             top_k=5,
-            use_llm=use_llm
+            use_llm=True  # Always True (needed for summaries)
         )
         rag.initialize()
         print("✅ System initialized successfully!")
@@ -593,36 +675,21 @@ def main():
                 break
             if not query:
                 continue
+            
             print("\n🔍 Searching...")
             result = rag.answer_question(query)
+            
             print("\n" + "="*70)
             print("📝 Answer:")
             print("="*70)
-
-            if args.mode == "llm":
-                # LLM mode: show answer + top relevant test cases with summaries
-                print(result['answer'])
-                print("\n" + "="*70)
-                print("🔍 Top Relevant Test Cases:")
-                print("="*70)
-                for i, doc in enumerate(result['retrieved_docs'][:3], start=1):
-                    print(f"\n{i}. [{doc['filename']}]  (Relevance: {doc['score']:.2f})")
-                    print("-" * 70)
-                    if args.summarize:
-                        try:
-                            # Fetch full test_case from rag.test_cases
-                            test_case_content = rag.test_cases[doc['filename']]
-                            summary = rag.summarize_test_case(test_case_content)
-                            print(f"📄 Summary:\n{summary}")
-                        except Exception as e:
-                            print(f"(⚠️ Could not generate summary: {e})")
-            else:
-                # Structured mode: zero hallucination
-                print(result['answer'])
-                print("\n" + "-"*70)
-                print(f"📚 Retrieved {result['num_retrieved']} test cases:")
-                for doc in result['retrieved_docs']:
-                    print(f"  • {doc['filename']} (score: {doc['score']:.3f}) - {doc['title']}")
+            
+            # Just print the answer - it already includes everything!
+            print(result['answer'])
+            
+            print("\n" + "-"*70)
+            print(f"📚 Retrieved {result['num_retrieved']} test cases:")
+            for doc in result['retrieved_docs']:
+                print(f"  • {doc['filename']} (score: {doc['score']:.3f}) - {doc['title']}")
             print("-"*70)
 
         except KeyboardInterrupt:
