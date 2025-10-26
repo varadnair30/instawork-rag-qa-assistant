@@ -112,11 +112,9 @@ with st.sidebar:
         help="Structured mode: Zero hallucination + AI summary\nNatural Language: Full LLM response"
     )
     
-    model = st.selectbox(
-        "LLM Model",
-        ["google/flan-t5-base", "google/flan-t5-large", "google/flan-t5-small"],
-        help="Select the language model for generation"
-    )
+    # Fixed model - no dropdown
+    model = "google/flan-t5-base"
+    st.info(f"**Model:** {model}")
     
     top_k = st.slider(
         "Results to Retrieve",
@@ -156,8 +154,13 @@ st.markdown('<div class="sub-header">AI-Powered Test Case Retrieval & Analysis</
 if not st.session_state.system_initialized:
     with st.spinner("🔧 Initializing RAG system... This may take 1-2 minutes on first run."):
         try:
+            # Show initialization progress
+            progress_text = st.empty()
+            progress_text.text("📦 Loading NLTK and Spacy resources...")
+            
             use_llm_mode = (mode == "Natural Language")
             
+            progress_text.text("🤖 Initializing RAG system...")
             rag = TestCaseRAG(
                 test_cases_dir="test_cases",
                 embedding_model="all-MiniLM-L6-v2",
@@ -165,16 +168,21 @@ if not st.session_state.system_initialized:
                 top_k=top_k,
                 use_llm=True  # Always True for summaries
             )
+            
+            progress_text.text("📚 Loading test cases and creating embeddings...")
             rag.initialize()
             
             st.session_state.rag_system = rag
             st.session_state.system_initialized = True
+            
+            progress_text.empty()
             st.success(f"✅ System initialized! Loaded {len(rag.test_cases)} test cases.")
             time.sleep(1)
             st.rerun()
             
         except Exception as e:
             st.error(f"❌ Error initializing system: {e}")
+            st.exception(e)  # Show full traceback for debugging
             st.stop()
 
 # Chat interface
@@ -246,6 +254,7 @@ if search_button and query:
             
         except Exception as e:
             st.error(f"❌ Error processing query: {e}")
+            st.exception(e)  # Show full traceback for debugging
 
 # Display chat history (most recent first)
 if st.session_state.chat_history:
@@ -278,30 +287,42 @@ if st.session_state.chat_history:
             </div>
             """, unsafe_allow_html=True)
             
-            # Retrieved test cases - Compact display
+            # Retrieved test cases - Compact display with error handling
             st.markdown("**📚 Retrieved Test Cases:**")
             
-            # Calculate number of columns based on number of docs
+            # Handle case when no test cases are retrieved (fixes the error)
             num_docs = len(chat['result']['retrieved_docs'])
-            num_cols = min(num_docs, 3)
-            cols = st.columns(num_cols)
             
-            for idx, doc in enumerate(chat['result']['retrieved_docs']):
-                col_idx = idx % num_cols
-                with cols[col_idx]:
-                    st.markdown(f"""
-                    <div style="background-color: #fafafa; padding: 0.8rem; border-radius: 6px; margin: 0.3rem 0; border-left: 3px solid #ff9800;">
-                        <div style="font-weight: 600; color: #e65100; font-size: 0.85rem;">
-                            {doc['filename']}
-                        </div>
-                        <div style="background-color: #4caf50; color: white; display: inline-block; padding: 0.15rem 0.4rem; border-radius: 10px; font-size: 0.75rem; margin: 0.3rem 0;">
-                            Score: {doc['score']:.3f}
-                        </div>
-                        <div style="color: #616161; font-size: 0.8rem; margin-top: 0.3rem; line-height: 1.3;">
-                            {doc['title'][:55]}{'...' if len(doc['title']) > 55 else ''}
-                        </div>
+            if num_docs == 0:
+                # Graceful handling - no results
+                st.markdown("""
+                <div style="background-color: #fff3cd; padding: 1rem; border-radius: 6px; margin: 0.5rem 0; border-left: 3px solid #ffc107;">
+                    <div style="color: #856404; font-size: 0.9rem;">
+                        ℹ️ No relevant test cases were found for this query.
                     </div>
-                    """, unsafe_allow_html=True)
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                # Calculate number of columns based on number of docs
+                num_cols = min(num_docs, 3)
+                cols = st.columns(num_cols)
+                
+                for idx, doc in enumerate(chat['result']['retrieved_docs']):
+                    col_idx = idx % num_cols
+                    with cols[col_idx]:
+                        st.markdown(f"""
+                        <div style="background-color: #fafafa; padding: 0.8rem; border-radius: 6px; margin: 0.3rem 0; border-left: 3px solid #ff9800;">
+                            <div style="font-weight: 600; color: #e65100; font-size: 0.85rem;">
+                                {doc['filename']}
+                            </div>
+                            <div style="background-color: #4caf50; color: white; display: inline-block; padding: 0.15rem 0.4rem; border-radius: 10px; font-size: 0.75rem; margin: 0.3rem 0;">
+                                Score: {doc['score']:.3f}
+                            </div>
+                            <div style="color: #616161; font-size: 0.8rem; margin-top: 0.3rem; line-height: 1.3;">
+                                {doc['title'][:55]}{'...' if len(doc['title']) > 55 else ''}
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
             
             # Full details in collapsible expander
             with st.expander("📄 View Full Technical Details", expanded=False):
