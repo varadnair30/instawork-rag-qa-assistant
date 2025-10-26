@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 from typing import List, Dict
 from sentence_transformers import SentenceTransformer
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import numpy as np
 import spacy
 import chromadb
@@ -72,6 +73,8 @@ class TestCaseRAG:
                 do_sample=False,
                 temperature=0.3
             )
+            self.tokenizer = AutoTokenizer.from_pretrained(llm_model)
+            self.llm_model_obj = AutoModelForSeq2SeqLM.from_pretrained(llm_model)
 
         # Store test cases
         self.test_cases = {}
@@ -90,6 +93,53 @@ class TestCaseRAG:
                     self.test_cases[json_file.name] = test_case
             except Exception as e:
                 logger.error(f"Error loading {json_file.name}: {e}")
+
+    # ===================================================
+    # SUMMARIZATION MODULE
+    # ===================================================
+    def summarize_test_case(self, test_case_content: dict) -> str:
+        """
+        Summarizes a single test case text using the LLM.
+        """
+        if not self.use_llm or not self.llm_model_obj or not self.tokenizer:
+            return "(⚠️ Summarization not available: LLM not initialized)"
+
+        try:
+            # Build a readable string from test case dict
+            readable_text = ""
+            if test_case_content.get("title"):
+                readable_text += f"Title: {test_case_content['title']}\n"
+            if test_case_content.get("custom_preconds"):
+                readable_text += f"Preconditions: {test_case_content['custom_preconds']}\n"
+            steps = test_case_content.get("custom_steps_separated", [])
+            if steps:
+                readable_text += "Steps:\n"
+                for i, step in enumerate(steps, 1):
+                    if isinstance(step, dict):
+                        readable_text += f"  {i}. {step.get('content', '')} -> Expected: {step.get('expected', '')}\n"
+
+            prompt = (
+                "Summarize the following QA test case in 3-4 concise lines. "
+                "Focus on what it tests, key steps, and the expected outcome.\n\n"
+                f"{readable_text}"
+            )
+
+            inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
+            device = self.llm_model_obj.device if hasattr(self.llm_model_obj, 'device') else 'cpu'
+            inputs = {k: v.to(device) for k, v in inputs.items()}
+
+            outputs = self.llm_model_obj.generate(
+                **inputs,
+                max_length=150,
+                num_beams=4,
+                early_stopping=True
+            )
+            summary = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            return summary.strip()
+        except Exception as e:
+            return f"(⚠️ Could not generate summary: {e})"
+
+        
 
     def chunk_test_case(self, test_case: Dict, filename: str) -> List[Dict]:
         """
@@ -496,6 +546,7 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(description='RAG QA Assistant')
     parser.add_argument('--mode', choices=['structured', 'llm'], default='structured', help='Output mode: structured (safe) or llm (natural language)')
+    parser.add_argument('--summarize', action='store_true', help='Generate summaries for test cases')
     parser.add_argument('--model', default='google/flan-t5-base', help='LLM model to use (only for llm mode)')
     args = parser.parse_args()
 
@@ -547,12 +598,33 @@ def main():
             print("\n" + "="*70)
             print("📝 Answer:")
             print("="*70)
-            print(result['answer'])
-            print("\n" + "-"*70)
-            print(f"📚 Retrieved {result['num_retrieved']} test cases:")
-            for doc in result['retrieved_docs']:
-                print(f"  • {doc['filename']} (score: {doc['score']:.3f}) - {doc['title']}")
+
+            if args.mode == "llm":
+                # LLM mode: show answer + top relevant test cases with summaries
+                print(result['answer'])
+                print("\n" + "="*70)
+                print("🔍 Top Relevant Test Cases:")
+                print("="*70)
+                for i, doc in enumerate(result['retrieved_docs'][:3], start=1):
+                    print(f"\n{i}. [{doc['filename']}]  (Relevance: {doc['score']:.2f})")
+                    print("-" * 70)
+                    if args.summarize:
+                        try:
+                            # Fetch full test_case from rag.test_cases
+                            test_case_content = rag.test_cases[doc['filename']]
+                            summary = rag.summarize_test_case(test_case_content)
+                            print(f"📄 Summary:\n{summary}")
+                        except Exception as e:
+                            print(f"(⚠️ Could not generate summary: {e})")
+            else:
+                # Structured mode: zero hallucination
+                print(result['answer'])
+                print("\n" + "-"*70)
+                print(f"📚 Retrieved {result['num_retrieved']} test cases:")
+                for doc in result['retrieved_docs']:
+                    print(f"  • {doc['filename']} (score: {doc['score']:.3f}) - {doc['title']}")
             print("-"*70)
+
         except KeyboardInterrupt:
             print("\n\n👋 Goodbye!")
             break
