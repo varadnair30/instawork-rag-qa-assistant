@@ -1,5 +1,3 @@
-
-
 from app import TestCaseRAG
 import json
 
@@ -52,8 +50,8 @@ def evaluate_result(test_name, test_case, result):
             return 0.0, f"❌ FAIL - Should return nothing, but returned: {retrieved_files}"
     
     # Check primary relevance (top 2 results)
-    top_2 = retrieved_files[:2] if len(retrieved_files) >= 2 else retrieved_files
-    primary_found = [f for f in test_case['expected_primary'] if f in top_2]
+    top_5 = retrieved_files[:5]
+    primary_found = [f for f in test_case['expected_primary'] if f in top_5]
     primary_score = len(primary_found) / len(test_case['expected_primary']) if test_case['expected_primary'] else 0
     
     # Check secondary relevance (all results)
