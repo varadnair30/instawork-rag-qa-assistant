@@ -15,6 +15,9 @@ from chromadb.config import Settings
 import logging
 from transformers import pipeline
 import torch
+import nltk
+nltk.download('wordnet')
+nltk.download('omw-1.4')
 
 # Configure logging
 logging.basicConfig(
@@ -498,44 +501,78 @@ class TestCaseRAG:
             answer += f"Primary match: {retrieved_docs[0]['test_case'].get('title', 'See details above')}\n"
         
         return answer
+    
     def generate_llm_answer(self, query: str, retrieved_docs: List[Dict]) -> str:
+        from nltk.stem import WordNetLemmatizer
+        import re
+        import logging
+        lemmatizer = WordNetLemmatizer()
+        logger = logging.getLogger(__name__)
+
         """
         Generate LLM-based answer using retrieved documents.
-        Prevents repetition and token overflow by truncating context.
-        Falls back to structured output if hallucinations or errors occur.
+        Dynamically tags scenarios like offline mode or validation using lemmatization.
+        Truncates context safely to avoid token overflow.
         """
         if not retrieved_docs:
             return self.generate_structured_answer(query, retrieved_docs)
 
+        # Define scenario keywords
+        keywords_to_tag = {
+            "Offline scenario": ["disable internet", "offline", "no network", "disconnect", "lost connection"],
+            "Validation scenario": ["invalid", "error", "required", "must enter"]
+        }
+
+        # Map tags to descriptive phrases
+        tag_to_phrase = {
+            "Offline scenario": "This action may occur when the app is offline or the internet is unavailable.",
+            "Validation scenario": "This action triggers a validation error that must be corrected."
+        }
+
         context_parts = []
         total_tokens = 0
-        max_context_tokens = 400  # limit context to prevent overflow
+        max_context_tokens = 400  # prevent overflow
 
         for i, doc in enumerate(retrieved_docs[:3], 1):
-            test_case = doc['test_case']
-            filename = doc['filename']
+            test_case = doc["test_case"]
+            filename = doc["filename"]
 
-            # Build test case context safely
             context = f"Test Case {i} [{filename}]:\n"
             context += f"Title: {test_case.get('title', 'N/A')}\n"
 
-            if test_case.get('section_full_path'):
+            if test_case.get("section_full_path"):
                 context += f"Path: {test_case['section_full_path']}\n"
 
-            if test_case.get('custom_preconds'):
-                preconds = test_case['custom_preconds']
-                preconds = preconds[:200]
-                context += f"Prerequisites: {preconds}\n"
+            if test_case.get("custom_preconds"):
+                preconds = test_case["custom_preconds"]
+                context += f"Prerequisites: {preconds[:150]}{'...' if len(preconds) > 150 else ''}\n"
 
-            steps = test_case.get('custom_steps_separated', [])
+            steps = test_case.get("custom_steps_separated", [])
             if steps:
-                context += f"Steps: {min(len(steps), 5)} test steps (truncated)\n"
+                context += f"Steps: {min(len(steps),5)} steps (truncated)\n"
                 for j, step in enumerate(steps[:5], 1):
                     if isinstance(step, dict):
-                        content = step.get('content', '')
-                        expected = step.get('expected', '')
-                        step_text = f"Step {j}: {content[:80]} -> Expected: {expected[:80]}\n"
-                        context += step_text
+                        content = step.get("content", "")
+                        expected = step.get("expected", "")
+                        
+                        # Lemmatize words for scenario detection
+                        step_words = (content + " " + expected).lower().split()
+                        step_lemmas = [lemmatizer.lemmatize(w) for w in step_words]
+                        step_text_for_matching = " ".join(step_lemmas)
+
+                        # Detect scenarios
+                        tags = [tag for tag, kws in keywords_to_tag.items()
+                                if any(kw in step_text_for_matching for kw in kws)]
+                        # Produce descriptive phrases
+                        tag_phrase = " ".join([tag_to_phrase[tag] for tag in tags]) + " " if tags else ""
+
+                        content_preview = content[:50] + ("..." if len(content) > 50 else "")
+                        expected_preview = expected[:75] + ("..." if len(expected) > 75 else "")
+                        context += f"  Step {j}: {tag_phrase}{content_preview} -> Expected: {expected_preview}\n"
+
+            if test_case.get("description"):
+                desc = test_case["description"]
+                context += f"Description: {desc[:150]}{'...' if len(desc) > 150 else ''}\n"
 
             # Stop adding more context if token budget exceeded
             token_estimate = len(context.split()) // 1.3
@@ -548,18 +585,21 @@ class TestCaseRAG:
 
         prompt = f"""You are a QA assistant. Answer based ONLY on the test cases below.
 
-RULES:
-1. Only use information from the provided test cases.
-2. Always cite source files in square brackets, e.g. [Source: filename].
-3. If test cases don't answer the question, say so clearly.
-4. Never invent new test case names or details.
+    RULES:
+    1. Only use information from the provided test cases.
+    2. Steps may have descriptive phrases like: 
+    - Offline scenario → app is offline or internet unavailable
+    - Validation scenario → validation errors
+    3. Always cite source files in square brackets, e.g. [Source: filename].
+    4. If test cases don't answer the question, say so clearly.
+    5. Never invent new test case names or details.
 
-Question: {query}
+    Question: {query}
 
-Test Cases:
-{full_context}
+    Test Cases:
+    {full_context}
 
-Answer:"""
+    Answer:"""
 
         try:
             response = self.llm_pipeline(
@@ -570,7 +610,7 @@ Answer:"""
                 num_beams=2,
                 early_stopping=True
             )
-            answer = response[0]['generated_text'].strip()
+            answer = response[0]["generated_text"].strip()
 
             # --- Post-cleaning for repetition ---
             lines = answer.splitlines()
@@ -589,8 +629,8 @@ Answer:"""
 
             # Verify citations
             import re
-            cited_files = set(re.findall(r'\bTC\d+\.json\b', answer))
-            valid_files = {doc['filename'] for doc in retrieved_docs}
+            cited_files = set(re.findall(r"\bTC\d+\.json\b", answer))
+            valid_files = {doc["filename"] for doc in retrieved_docs}
             invalid_citations = cited_files - valid_files
 
             if invalid_citations:
