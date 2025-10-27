@@ -31,6 +31,8 @@ This system solves a critical QA challenge: **navigating hundreds of manual test
 
 The system retrieves relevant test cases using semantic search and provides AI-generated summaries for quick comprehension.
 
+🎥 **Demo Video:** [Watch here](https://www.youtube.com/watch?v=C6R3vk7EpiE)
+
 ---
 
 ## ✨ Key Features
