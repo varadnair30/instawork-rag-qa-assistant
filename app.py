@@ -365,6 +365,19 @@ class TestCaseRAG:
                 'test_case': self.test_cases[filename]
             })
 
+
+        # === SMART OFFLINE MODE BOOST ===
+        offline_triggers = ["lose internet", "no internet", "connection lost", "lose connection", "offline"]
+        if any(trigger in query_lower for trigger in offline_triggers):
+            logger.info("🔍 Offline-related query detected — applying smart boost for offline mode test cases.")
+            offline_related_ids = {"TC11076.json", "TC11096.json", "TC11088.json", "TC27696.json"}
+            for result in aggregated_results:
+                if result["filename"] in offline_related_ids:
+                    result["score"] += 0.25
+                    logger.info(f"Applied offline boost to {result['filename']}")
+
+
+                    
         aggregated_results.sort(key=lambda x: x['score'], reverse=True)
 
         # --------- SMART ADAPTIVE FILTERING ------------

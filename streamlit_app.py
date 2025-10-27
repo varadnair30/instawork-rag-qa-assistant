@@ -116,13 +116,7 @@ with st.sidebar:
     model = "google/flan-t5-base"
     st.info(f"**Model:** {model}")
     
-    top_k = st.slider(
-        "Results to Retrieve",
-        min_value=1,
-        max_value=10,
-        value=5,
-        help="Number of test cases to retrieve"
-    )
+    top_k = 5
     
     st.markdown("---")
     st.markdown("### 📊 System Status")
@@ -141,10 +135,6 @@ with st.sidebar:
         st.session_state.chat_history = []
         st.rerun()
     
-    if st.button("🔄 Reinitialize System", use_container_width=True):
-        st.session_state.system_initialized = False
-        st.session_state.rag_system = None
-        st.rerun()
 
 # Main content
 st.markdown('<div class="main-header">🔍 QA Test Case Assistant</div>', unsafe_allow_html=True)
@@ -200,9 +190,9 @@ col1, col2, col3 = st.columns([2, 1, 1])
 with col1:
     search_button = st.button("🔍 Search", type="primary", use_container_width=True)
 with col2:
-    example_btn1 = st.button("📱 Example 1", use_container_width=True)
+    example_btn1 = st.button("📱 Example 1 (What tests cover Spanish onboarding?)", use_container_width=True)
 with col3:
-    example_btn2 = st.button("📱 Example 2", use_container_width=True)
+    example_btn2 = st.button("📱 Example 2 (What happens if internet is lost during signup?)", use_container_width=True)
 
 # Handle example buttons
 if example_btn1:
