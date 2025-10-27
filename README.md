@@ -61,7 +61,7 @@ The system retrieves relevant test cases using semantic search and provides AI-g
 ---
 
 ## 🏗️ System Architecture 
-![System Architecture](architecture_diagram.png)
+![System Architecture](architecture_diagram.PNG)
 
 ### **High-Level Data Flow**
 
