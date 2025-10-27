@@ -620,9 +620,9 @@ python app.py --help
 
 ### **Option 1: Command Line Interface (CLI)**
 
-#### **Structured Mode (Default - Recommended)**
+#### **Structured Mode (Default - RECOMMENDED)**
 ```bash
-python app.py --mode structured
+python app.py
 ```
 
 #### **LLM Mode (experimental) (Natural Language Generation)**
@@ -671,13 +671,13 @@ Open browser at `http://localhost:8501`
 
 ```bash
 # Build image
-docker build -t qa-assistant .
+docker build -t rag-app .
 
 # Run CLI
-docker run -it qa-assistant python app.py --mode structured
+docker run -it rag-app python app.py --mode structured
 
 # Run Web UI
-docker run -p 8501:8501 qa-assistant streamlit run streamlit_app.py
+docker run -it -p 8501:8501 rag-app 
 ```
 
 ---
