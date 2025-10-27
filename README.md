@@ -1,6 +1,6 @@
 # 🔍 QA Test Case Assistant - RAG System
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Evaluation](https://img.shields.io/badge/Evaluation-Grade%20A-brightgreen.svg)](official_test_results.json)
 
