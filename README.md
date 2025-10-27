@@ -620,14 +620,24 @@ python app.py --help
 
 ### **Option 1: Command Line Interface (CLI)**
 
-#### **Structured Mode (Default - RECOMMENDED)**
+#### **Testing Mode (OPTIONAL - Just to check the working and evaluation)**
 ```bash
-python app.py
+python test_queries.py
+```
+then you can try and do it with PyTest as well
+
+```bash
+python pytest_queries.py
 ```
 
 #### **LLM Mode (experimental) (Natural Language Generation)**
 ```bash
 python app.py --mode llm
+```
+
+#### **Structured Mode (Default - RECOMMENDED)**
+```bash
+python app.py
 ```
 
 **Example Session**:
