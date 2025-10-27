@@ -103,16 +103,14 @@ if 'system_initialized' not in st.session_state:
 
 # Sidebar
 with st.sidebar:
-    st.image("https://via.placeholder.com/150x50/1f77b4/ffffff?text=QA+Assistant", width=200)
+    
     st.markdown("### ⚙️ System Configuration")
     
-    mode = st.radio(
-        "Output Mode",
-        ["Structured (Recommended)", "Natural Language"],
-        help="Structured mode: Zero hallucination + AI summary\nNatural Language: Full LLM response"
-    )
     
-    # Fixed model - no dropdown
+    
+    st.info("Structured (Zero hallucination + AI summary\nNatural Language: Full LLM response ✅)")
+    
+   
     model = "google/flan-t5-base"
     st.info(f"**Model:** {model}")
     
@@ -148,7 +146,7 @@ if not st.session_state.system_initialized:
             progress_text = st.empty()
             progress_text.text("📦 Loading NLTK and Spacy resources...")
             
-            use_llm_mode = (mode == "Natural Language")
+            
             
             progress_text.text("🤖 Initializing RAG system...")
             rag = TestCaseRAG(
@@ -349,7 +347,7 @@ st.markdown("---")
 col1, col2, col3 = st.columns(3)
 with col1:
     st.markdown("**📊 System Stats**")
-    st.markdown(f"Mode: {mode}")
+    st.markdown(f"Mode: Structured")
 with col2:
     st.markdown("**🏆 Performance**")
     st.markdown("Evaluation: 100% (Grade A)")
