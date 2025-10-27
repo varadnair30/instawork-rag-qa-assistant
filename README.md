@@ -592,8 +592,8 @@ The system also handles reconnection scenarios gracefully. [TC11076.json, TC1109
 
 1. **Clone the Repository**
 ```bash
-git clone https://github.com/yourusername/qa-test-case-assistant.git
-cd qa-test-case-assistant
+git clone https://github.com/yourusername/instawork-rag-qa-assistant.git
+cd instawork-rag-qa-assistant
 ```
 
 2. **Install Dependencies**
@@ -735,7 +735,7 @@ docker run -p 8501:8501 qa-assistant streamlit run streamlit_app.py
 ## 📁 Project Structure
 
 ```
-qa-test-case-assistant/
+instawork-rag-qa-assistant/
 ├── app.py                      # Main RAG system & CLI interface
 ├── streamlit_app.py            # Streamlit web interface
 ├── requirements.txt            # Python dependencies
@@ -804,7 +804,11 @@ See `official_test_results.json` for complete evaluation details.
 
 **Mitigation**: Implemented validation-aware boosting heuristic. Can be further improved with query-specific rules.
 
-**Trade-off**: Balancing semantic understanding vs. exact keyword matching is inherent to RAG systems.
+**Trade-off**: Since the embedding model relies on semantic similarity, it slightly penalizes cases that don’t directly use that term — even if they’re conceptually about validation.
+
+Now, either we can leave it like this — which is completely explainable — or we can add a validation-aware boosting heuristic. That means lightly increasing the score for any test case that deals with validation errors, even if it’s not email-specific.
+
+The trade-off is that we’d need to manually define and hardcode that boost logic — so it’s more rule-based than learned.
 
 ### **2. LLM Summary Quality**
 
@@ -857,7 +861,7 @@ See `official_test_results.json` for complete evaluation details.
 
 ## 🤝 Contributing
 
-This is a take-home assignment submission. For production use cases or collaboration inquiries, please contact the repository owner.
+This is a take-home assignment submission by Instawork. For production use cases or collaboration inquiries, please contact the repository owner.
 
 ---
 
@@ -881,10 +885,10 @@ MIT License - See LICENSE file for details.
 - **Anthropic** for Claude AI assistance during development
 - **Sentence-Transformers** community for excellent embedding models
 - **Hugging Face** for open-source LLM infrastructure
-- **QA Team** for providing comprehensive test case dataset
+- **QA Team ❤️** for providing comprehensive test case dataset
 
 ---
 
 **Built with ❤️ for QA Engineers**
 
-*Making test case navigation intelligent, one query at a time.*
+*Making test case navigation intelligent, one query at a time :)*
