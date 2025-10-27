@@ -602,7 +602,7 @@ cd instawork-rag-qa-assistant
 pip install -r requirements.txt
 ```
 
-3. **Download spaCy Model** (Required for NLP)
+3. **Download spaCy Model** (Required for NLP --- for verification if its installed)
 ```bash
 python -m spacy download en_core_web_sm
 ```
