@@ -44,7 +44,7 @@ The system retrieves relevant test cases using semantic search and provides AI-g
 ### 🤖 **Intelligent Summarization**
 - **Two Answer Modes**:
   - **Structured Mode** (Default): Factual test case details + AI-generated summary
-  - **LLM Mode**: Conversational, context-aware natural language responses
+  - **LLM Mode (experimental [Future Scope])**: Conversational, context-aware natural language responses
 - **Zero-Hallucination Safeguards**: Citation verification, repetition detection, automatic fallback to structured mode
 - **Lemmatization-Based Tagging**: Dynamically identifies scenarios (offline, validation) in test steps
 
@@ -60,7 +60,8 @@ The system retrieves relevant test cases using semantic search and provides AI-g
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ System Architecture 
+![System Architecture](architecture_diagram.png)
 
 ### **High-Level Data Flow**
 
@@ -358,7 +359,7 @@ with and without resume uploads. All critical steps are validated in Spanish.
 - **Safe**: Truncated context prevents token overflow errors
 - **Deterministic**: Same query always returns same structured data
 
-##### **B. LLM Mode** (`generate_llm_answer()`)
+##### **B. LLM Mode (experimental)** (`generate_llm_answer()`)
 ```python
 def generate_llm_answer(self, query: str, retrieved_docs: List[Dict]) -> str
 ```
@@ -624,7 +625,7 @@ python app.py --help
 python app.py --mode structured
 ```
 
-#### **LLM Mode (Natural Language Generation)**
+#### **LLM Mode (experimental) (Natural Language Generation)**
 ```bash
 python app.py --mode llm
 ```
@@ -683,14 +684,16 @@ docker run -p 8501:8501 qa-assistant streamlit run streamlit_app.py
 
 ## 🎛️ System Modes
 
-| Feature | Structured Mode | LLM Mode |
-|---------|----------------|----------|
-| **Output Style** | Factual test case details + AI summary | Conversational natural language |
-| **Hallucination Risk** | Zero (grounded in source data) | Minimal (with safeguards) |
-| **Use Case** | Production QA, validation, compliance | Demos, exploration, non-technical users |
+| Feature | Structured Mode | LLM Mode (Experimental) |
+|---------|----------------|------------------------|
+| **Output Style** | Factual test case details + AI summary | Conversational natural language (experimental) |
+| **Hallucination Risk** | Zero (grounded in source data) | May occasionally produce inconsistent responses |
+| **Use Case** | Production QA, validation, compliance | Demonstration, exploration, non-technical queries |
 | **Speed** | Fast | Moderate (requires LLM inference) |
-| **Citation** | Explicit source files | Verified citations |
+| **Citation** | Explicit source files | Verified when possible |
 | **Default** | ✅ Yes | ❌ No |
+
+> **Note:** LLM Mode is currently experimental and intended for exploratory queries or demos. Its output may sometimes be inconsistent. For verifiable and reliable results, Structured Mode is recommended.
 
 ### **When to Use Each Mode**
 
@@ -700,9 +703,7 @@ docker run -p 8501:8501 qa-assistant streamlit run streamlit_app.py
 - You need deterministic, reproducible results
 - Speed matters more than conversational polish
 
-**Use LLM Mode** when:
-- Demonstrating system capabilities to stakeholders
-- Non-technical users prefer natural language responses
+**Use LLM Mode (experimental)** when:
 - Contextual reasoning across multiple test cases is valuable
 - Exploratory queries where creativity helps
 
@@ -835,6 +836,7 @@ The trade-off is that we’d need to manually define and hardcode that boost log
 ## 🔮 Future Enhancements
 
 ### **Phase 1: Production Readiness**
+- [ ] Improve LLM Mode reliability and consistency for better reasoning
 - [ ] Persistent vector store (upgrade ChromaDB to disk storage)
 - [ ] API endpoint (Flask REST API for programmatic access)
 - [ ] Authentication & role-based access control
