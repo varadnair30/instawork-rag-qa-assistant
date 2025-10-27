@@ -851,7 +851,7 @@ See `official_test_results.json` for complete evaluation details.
 ### **Phase 4: Advanced Features**
 - [ ] Test case recommendations based on code changes (Git diff analysis)
 - [ ] Automated test case generation from user stories
-- [ ] Multilingual support (Spanish, English test cases)
+- [ ] Multilingual support (Spanish, German, French test cases)
 
 ---
 
